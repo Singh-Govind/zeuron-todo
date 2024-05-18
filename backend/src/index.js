@@ -17,6 +17,8 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home route" });
 });
 
-app.listen(PORT, () => {
-  console.log(`server started at ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`server started at ${PORT}`);
+// });
+
+module.exports = app;
