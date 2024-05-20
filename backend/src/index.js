@@ -18,7 +18,13 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home route" });
 });
 
-app.listen(PORT, async () => {
+(async () => {
   await dbConnection();
   console.log(`server started at ${PORT}`);
-});
+})();
+// app.listen(PORT, async () => {
+//   await dbConnection();
+//   console.log(`server started at ${PORT}`);
+// });
+
+module.exports = app;
