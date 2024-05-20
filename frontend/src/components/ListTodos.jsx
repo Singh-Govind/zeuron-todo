@@ -95,7 +95,7 @@ export default function ListTodos({ tasks, fetchTasks }) {
                 |{" "}
                 <span
                   style={{ ...spanStyle, color: "red" }}
-                  onClick={() => deleteData(item.id)}
+                  onClick={() => deleteData(item._id)}
                 >
                   Delete
                 </span>

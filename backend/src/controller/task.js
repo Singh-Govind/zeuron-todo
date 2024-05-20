@@ -1,6 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const { default: mongoose } = require("mongoose");
+const TaskModel = require("../model/task");
 
 const Task = {};
 
@@ -14,19 +13,18 @@ Task.getTask = async (req, res) => {
     }
 
     let makeQuery = {
-      userId: parseInt(id),
+      $match: {
+        userId: new mongoose.Types.ObjectId(id),
+      },
     };
 
     if (filter) {
-      makeQuery = {
-        ...makeQuery,
-        priority: filter,
-      };
+      makeQuery.$match.priority = filter;
     }
 
-    const tasks = await prisma.task.findMany({
-      where: makeQuery,
-    });
+    const pipeline = [makeQuery];
+
+    const tasks = await TaskModel.aggregate(pipeline);
 
     res.json({ msg: "ok", tasks });
   } catch (e) {
@@ -53,14 +51,12 @@ Task.addTask = async (req, res) => {
       return res.status(404).json({ msg: "not found" });
     }
 
-    const task = await prisma.task.create({
-      data: {
-        name,
-        category,
-        finished,
-        priority,
-        userId: parseInt(id),
-      },
+    const task = await TaskModel.create({
+      name,
+      category,
+      finished,
+      priority,
+      userId: id,
     });
 
     res.json({ msg: "task added", task });
@@ -105,13 +101,14 @@ Task.updateTask = async (req, res) => {
       return res.status(404).json({ msg: "not found" });
     }
 
-    const updatedTask = await prisma.task.update({
-      where: {
-        id: parseInt(id),
-        userId: parseInt(userId),
+    const updatedTask = await TaskModel.findOneAndUpdate(
+      {
+        _id: id,
+        userId: userId,
       },
-      data: { ...obj },
-    });
+      obj,
+      { new: true }
+    );
 
     res.json({ msg: "task updated", updatedTask });
   } catch (e) {
@@ -128,11 +125,9 @@ Task.deleteTask = async (req, res) => {
       return res.status(404).json({ msg: "not found" });
     }
 
-    await prisma.task.delete({
-      where: {
-        id: parseInt(id),
-        userId: parseInt(userId),
-      },
+    await TaskModel.findOneAndDelete({
+      _id: id,
+      userId: userId,
     });
 
     res.json({ msg: "task deleted" });

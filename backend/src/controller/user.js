@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const UserModel = require("../model/user");
 
 const User = {};
 
@@ -12,11 +10,9 @@ User.register = async (req, res) => {
       return res.status(401).json({ msg: "please send all the data" });
     }
 
-    await prisma.user.create({
-      data: {
-        email,
-        password,
-      },
+    await UserModel.create({
+      email,
+      password,
     });
 
     res.json({ msg: "user created" });
@@ -29,10 +25,8 @@ User.login = async (req, res) => {
   try {
     let { email, password } = req.body;
 
-    let user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
+    let user = await UserModel.findOne({
+      email,
     });
 
     if (!user) {
@@ -43,7 +37,13 @@ User.login = async (req, res) => {
       return res.status(401).json({ msg: "incorrect password" });
     }
 
+    user = {
+      ...user._doc,
+      id: user._id,
+    };
+
     delete user.password;
+    delete user._id;
 
     res.json({ msg: "user", user });
   } catch (e) {

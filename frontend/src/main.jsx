@@ -5,7 +5,7 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import AppContextProvider from "./context/AppContextProvider.jsx";
 
-export const baseUrl = "https://zeuron-todo.vercel.app";
+export const baseUrl = "http://localhost:8000";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const userRouter = require("./routes/user");
 const taskRouter = require("./routes/task");
+const dbConnection = require("./conf/dbConfig");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home route" });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await dbConnection();
   console.log(`server started at ${PORT}`);
 });

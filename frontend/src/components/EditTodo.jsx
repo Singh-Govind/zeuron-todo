@@ -80,7 +80,7 @@ export default function EditTodo({ open, handleClose, item, fetchTasks }) {
 
   const editCategory = async () => {
     try {
-      let res = await fetch(`${baseUrl}/task/update/${item.id}`, {
+      let res = await fetch(`${baseUrl}/task/update/${item._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", authorization: user.id },
         body: JSON.stringify(data),
